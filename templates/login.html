@@ -3,16 +3,11 @@
     <head>
         <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
         <script type="text/javascript">
-            $('.message a').click(function(e) {
-                // console.log("!!!!!!!!!!")
-                // document.write(5 + 6)
-                // e.preventDefault();
-                $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
-                // return false;
+            $(document).ready(function() {
+                $("a").click(function() {
+                    $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
+                });
             });
-
-            // obj = document.getElementById(1)
-            // console.log(obj)
         </script>
 
         <meta charset="UTF-8">
@@ -28,7 +23,7 @@
                     <input type="password" placeholder="password"/>
                     <input type="text" placeholder="email address"/>
                     <button>create</button>
-                    <p class="message">Already registered? <a href="#" onclick="document.write(5 + 6)">Sign In</a></p>
+                    <p class="message">Already registered? <a href="#">Sign In</a></p>
                 </form>
                 <form class="login-form">
                     <input type="text" placeholder="username"/>
