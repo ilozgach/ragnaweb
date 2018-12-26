@@ -1,7 +1,7 @@
  <!DOCTYPE html>
 <html>
     <head>
-        <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<!--         <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
         <script type="text/javascript">
             $(document).ready(function() {
                 $("a").click(function() {
@@ -9,7 +9,7 @@
                 });
             });
         </script>
-
+ -->
         <meta charset="UTF-8">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/login.css') }}">
         <title>Title of the document</title>
@@ -18,17 +18,21 @@
     <body>
         <div class="login-page">
             <div class="form">
-                <form class="register-form">
+<!--                 <form class="register-form">
                     <input type="text" placeholder="name"/>
                     <input type="password" placeholder="password"/>
                     <input type="text" placeholder="email address"/>
                     <button>create</button>
                     <p class="message">Already registered? <a href="#">Sign In</a></p>
-                </form>
-                <form class="login-form">
-                    <input type="text" placeholder="username"/>
-                    <input type="password" placeholder="password"/>
+                </form> -->
+                <form class="login-form" action="" method="post">
+                    <input name="username" type="text" placeholder="username"/>
+                    <input name="password" type="password" placeholder="password"/>
+                    {% if fail_auth %}
+                    <button>invalid credentials, try again</button>
+                    {% else %}
                     <button>login</button>
+                    {% endif %}
                     <p class="message">Not registered? <a href="#">Create an account</a></p>
                 </form>
             </div>
