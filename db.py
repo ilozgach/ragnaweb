@@ -45,6 +45,12 @@ class Login(object):
         return unicode(str(self.account_id))
 
 
+class Char(object):
+    def __init__(self, **kwargs):
+        for k, v in kwargs.items():
+            setattr(self, k, v)
+
+
 class DbAccess(object):
     def __init__(self, host, user, passwd, db="ragnarok"):
         self.conn = MySQLdb.connect(host=host, user=user, passwd=passwd, db=db)
@@ -70,5 +76,16 @@ class DbAccess(object):
 
         if len(data) == 0:
             return None
+
+        return Login(**(data[0]))   
+
+    def get_chars_by_account_id(self, account_id):
+        query = "SELECT * FROM ragnarok.char WHERE account_id={}".format(account_id)
+        cur = self.conn.cursor(MySQLdb.cursors.DictCursor)
+        cur.execute(query)
+        data = cur.fetchall()
+
+        if len(data) == 0:
+            return []
 
         return Login(**(data[0]))

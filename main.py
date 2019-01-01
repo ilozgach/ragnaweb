@@ -1,7 +1,6 @@
 from flask import g, Flask, render_template, request
 from flask_login.login_manager import LoginManager
 from flask_login.utils import login_user
-from auth import get_user, User
 from db import DbAccess
 
 app = Flask(__name__)
@@ -12,7 +11,7 @@ login_manager.init_app(app)
 
 def get_db():
     if 'db' not in g:
-        g.db = DbAccess(host="192.168.1.94", user="ragnarok", passwd="ragnarok", db="ragnarok")
+        g.db = DbAccess(host="172.20.10.12", user="ragnarok", passwd="ragnarok", db="ragnarok")
     return g.db
 
 # @app.teardown_appcontext
@@ -41,12 +40,16 @@ def login():
 
         if login is not None and login.user_pass == password:
             login_user(login)
-            return render_template("home.html")
+            return render_template("char.html")
         else:
             return render_template("login.html", fail_auth=True)
     else:
         return render_template("login.html", fail_auth=False)
 
+
+@app.route("/chars", methods=['GET'])
+def chars():
+    return render_template("char.html")
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
