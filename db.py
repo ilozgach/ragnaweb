@@ -1,5 +1,8 @@
+import logging
 import MySQLdb
 from flask import g
+
+log = logging.getLogger("main")
 
 
 def connect_db():
@@ -59,33 +62,51 @@ class DbAccess(object):
         id = int(id, 10)  # it should be always integer string
 
         query = "SELECT * FROM login WHERE account_id={}".format(id)
+        log.debug("Executing SQL query '{}'".format(query))
         cur = self.conn.cursor(MySQLdb.cursors.DictCursor)
         cur.execute(query)
         data = cur.fetchall()
 
         if len(data) == 0:
+            log.debug("Query returned no data")
             return None
 
-        return Login(**(data[0]))
+        login = Login(**(data[0]))
+        log.info("Query fetched login {{ {} }}".format(
+            ", ".join("({} = {})".format(k, v) for k, v in login.__dict__.items() if type(k) is str)))
+        return login
 
     def get_login_by_name(self, name):
         query = "SELECT * FROM ragnarok.login WHERE userid='{}'".format(name)
+        log.debug("Executing SQL query '{}'".format(query))
         cur = self.conn.cursor(MySQLdb.cursors.DictCursor)
         cur.execute(query)
         data = cur.fetchall()
 
         if len(data) == 0:
+            log.debug("Query returned no data")
             return None
 
-        return Login(**(data[0]))   
+        login = Login(**(data[0]))
+        log.info("Query fetched login {{ {} }}".format(
+            ", ".join("({} = {})".format(k, v) for k, v in login.__dict__.items() if type(k) is str)))
+        return login
 
     def get_chars_by_account_id(self, account_id):
         query = "SELECT * FROM ragnarok.char WHERE account_id={}".format(account_id)
+        log.debug("Executing SQL query '{}'".format(query))
         cur = self.conn.cursor(MySQLdb.cursors.DictCursor)
         cur.execute(query)
         data = cur.fetchall()
 
         if len(data) == 0:
+            log.debug("Query returned no data")
             return []
 
-        return Login(**(data[0]))
+        chars = []
+        for d in data:
+            char = Char(**d)
+            log.info("Query fetched char {{ {} }}".format(
+                ", ".join("({} = {})".format(k, v) for k, v in char.__dict__.items() if type(k) is str)))
+            chars.append(char)
+        return chars
