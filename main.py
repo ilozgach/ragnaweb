@@ -22,7 +22,7 @@ login_manager.init_app(app)
 
 def get_db():
     if 'db' not in g:
-        g.db = DbAccess(host="192.168.1.47", user="ragnarok", passwd="ragnarok", db="ragnarok")
+        g.db = DbAccess(host="192.168.1.93", user="ragnarok", passwd="ragnarok", db="ragnarok")
     return g.db
 
 # @app.teardown_appcontext
@@ -63,8 +63,8 @@ def login():
 def chars():
     db = get_db()
     chars = db.get_chars_by_account_id(current_user.account_id)
-    print chars
-    return render_template("chars.html")
+    return render_template("chars.html", chars=chars)
+
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")

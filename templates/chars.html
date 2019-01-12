@@ -1,1 +1,10 @@
 {% extends "layout.html" %}
+{% block content %}
+    <table>
+        {% for char in chars %}
+            <tr>
+                <td>{{ char.account_id }}</td><td>22</td>
+            </tr>
+        {% endfor %}
+</table>
+{% endblock %}
