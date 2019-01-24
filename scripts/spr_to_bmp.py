@@ -1,3 +1,5 @@
+import os
+
 def read_act(path):
     with open(path, "rb") as f:
         d = f.read()
@@ -35,10 +37,17 @@ def read_spr(path):
 
     d = map(ord, d)
 
+    palette = d[len(d) - 1024:]
+    # print "PALETTE =================================================="
+    # for i in range(1024 / 64):
+    #     print " ".join(map(str, palette[i * 1024 / 64: i * 1024 / 64 + 64]))
+    # print "PALETTE =================================================="
+
     b = 4
     nof_frames = d[b] | d[b + 1] << 8
 
     b += 4
+    images = []
     for i in range(nof_frames):
         width = d[b] | d[b + 1] << 8
         height = d[b + 2] | d[b + 3] << 8
@@ -67,19 +76,24 @@ def read_spr(path):
             pixels = buf[i:i + width] + pixels
             i += width
 
-        print pixels
-
-        from PIL import Image
-
-        img = Image.new('RGB', (width, height))
-        img.putdata(pixels)
-        img.save('image.png')
-
-        break
+        images.append((width, height, pixels))
 
         b += comp_len + 6
-        # break
+
+    return images, palette
+
+def img_to_bmp(width, height, pixels, palette):
+    b = []
+
+    offset = 54 + len(palette)
+    file_size = offset + len(pixels)
+    b += map(chr, "BM")
+
+    strbuf_append (buf, (unsigned char *) "BM", 2);     /* Magic */
+    strbuf_append (buf, (unsigned char *) &file_size, 4);   /* File size */
+    strbuf_append (buf, (unsigned char *) "\0\0\0\0", 4);   /* Reserved */
+    strbuf_append (buf, (unsigned char *) &offset, 4);  /* Offset to image data */
 
 
 # read_act("d:/frus.act")
-read_spr("d:/frus.spr")
+read_spr(os.path.join(os.path.dirname(os.path.abspath(__file__)), "frus.spr"))
