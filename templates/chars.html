@@ -3,7 +3,40 @@
     <table>
         {% for char in chars %}
             <tr>
-                <td>{{ char.account_id }}</td><td>22</td>
+                <td colspan="3">{{ char.name }}</td>
+            </tr>
+            <tr>
+                <td rowspan="8">---------------</td>
+                <td>Level</td>
+                <td>{{ char.base_level }}</td>
+            </tr>
+            <tr>
+                <td>Zeny</td>
+                <td>{{ char.zeny }}</td>
+            </tr>
+            <tr>
+                <td>Str</td>
+                <td>{{ char.str }}</td>
+            </tr>
+            <tr>
+                <td>Agi</td>
+                <td>{{ char.agi }}</td>
+            </tr>
+            <tr>
+                <td>Dex</td>
+                <td>{{ char.dex }}</td>
+            </tr>
+            <tr>
+                <td>Int</td>
+                <td>{{ char.int }}</td>
+            </tr>
+            <tr>
+                <td>Vit</td>
+                <td>{{ char.vit }}</td>
+            </tr>
+            <tr>
+                <td>Luk</td>
+                <td>{{ char.luk }}</td>
             </tr>
         {% endfor %}
 </table>
