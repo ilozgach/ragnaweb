@@ -28,6 +28,16 @@ def read_act(path):
         break
 
 
+def reverse_palette(palette):
+    res = []
+    for i in range(0, len(palette), 4):
+        res.append(palette[i + 2])
+        res.append(palette[i + 1])
+        res.append(palette[i])
+        res.append(0)
+    return res
+
+
 def read_spr(path):
     with open(path, "rb") as f:
         d = f.read()
@@ -37,11 +47,7 @@ def read_spr(path):
 
     d = map(ord, d)
 
-    palette = d[len(d) - 1024:]
-    # print "PALETTE =================================================="
-    # for i in range(1024 / 64):
-    #     print " ".join(map(str, palette[i * 1024 / 64: i * 1024 / 64 + 64]))
-    # print "PALETTE =================================================="
+    palette = reverse_palette(d[len(d) - 1024:])
 
     b = 4
     nof_frames = d[b] | d[b + 1] << 8
@@ -82,18 +88,63 @@ def read_spr(path):
 
     return images, palette
 
+
 def img_to_bmp(width, height, pixels, palette):
-    b = []
+    b = bytearray()
+
+    def append_buf(val, byte_count):
+        for i in range(byte_count):
+            b.append((val >> (8 * i)) & 0xff)
 
     offset = 54 + len(palette)
     file_size = offset + len(pixels)
-    b += map(chr, "BM")
+    b.extend([ord("B"), ord("M")])
+    append_buf(file_size, 4)
+    append_buf(0, 4)
+    append_buf(offset, 4)
 
-    strbuf_append (buf, (unsigned char *) "BM", 2);     /* Magic */
-    strbuf_append (buf, (unsigned char *) &file_size, 4);   /* File size */
-    strbuf_append (buf, (unsigned char *) "\0\0\0\0", 4);   /* Reserved */
-    strbuf_append (buf, (unsigned char *) &offset, 4);  /* Offset to image data */
+    info_hsize = 40
+    append_buf(info_hsize, 4)
+
+    append_buf(width, 4)
+    append_buf(height, 4)
+
+    nof_planes = 1
+    append_buf(nof_planes, 2)
+
+    nof_bits = 8
+    append_buf(nof_bits, 2)
+
+    compression_type = 0
+    append_buf(compression_type, 4)
+
+    pixel_data_size = len(pixels)
+    append_buf(pixel_data_size, 4)
+
+    x_pixels_per_meter = 0
+    append_buf(x_pixels_per_meter, 4)
+
+    y_pixels_per_meter = 0
+    append_buf(y_pixels_per_meter, 4)
+
+    nof_colors = 256
+    append_buf(nof_colors, 4)
+
+    nof_important_colors = 0
+    append_buf(nof_important_colors, 4)
+
+    print hex(palette[0])
+    print hex(palette[1])
+    print hex(palette[2])
+    print hex(palette[3])
+
+    b.extend(palette)
+    b.extend(pixels)
+
+    with open("tmp.bmp", "wb") as f:
+        f.write(b)
 
 
 # read_act("d:/frus.act")
-read_spr(os.path.join(os.path.dirname(os.path.abspath(__file__)), "frus.spr"))
+images, palette = read_spr(os.path.join(os.path.dirname(os.path.abspath(__file__)), "frus.spr"))
+img_to_bmp(images[0][0], images[0][1], images[0][2], palette)
