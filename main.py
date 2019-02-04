@@ -63,7 +63,7 @@ def login():
 def chars():
     db = get_db()
     chars = db.get_chars_by_account_id(current_user.account_id)
-    return render_template("chars.html", chars=chars)
+    return render_template("chars.html", chars=chars, sprData=[0, 1])
 
 
 if __name__ == "__main__":
