@@ -1,16 +1,14 @@
 {% extends "layout.html" %}
 {% block content %}
     <script src="/static/js/spr.js" type="text/javascript"></script>
-    <script type="text/javascript">
-        parseSpr({{ sprData }});
-    </script> 
+
     <table>
         {% for char in chars %}
             <tr>
                 <td colspan="3">{{ char.name }}</td>
             </tr>
             <tr>
-                <td rowspan="8">---------------</td>
+                <td rowspan="8"><canvas id="char_img_{{loop.index}}" width="200" height="300"></canvas></td>
                 <td>Level</td>
                 <td>{{ char.base_level }}</td>
             </tr>
@@ -43,5 +41,111 @@
                 <td>{{ char.luk }}</td>
             </tr>
         {% endfor %}
-</table>
+    </table>
+
+    <script type="text/javascript">
+
+        function reversePalette(palette) {
+            res = []
+            for (var i = 0; i < palette.length; i += 4) {
+                res.push(palette[i + 2])
+                res.push(palette[i + 1])
+                res.push(palette[i])
+                res.push(0)
+            }
+            return res
+        }
+
+        function drawSprites() {
+            var bodySprites = {{ body_sprites }}
+            for (var i = 0; i < bodySprites.length; i++) {
+                var data = parseSpr(bodySprites[i]);
+                var images = data[0]
+                var width = images[0][0]
+                var height = images[0][1]
+                var pixels = images[0][2]
+                // console.log(pixels)
+                var palette = data[1]
+
+                var c = document.getElementById("char_img_" + (i + 1));
+                var ctx = c.getContext("2d");
+                var imageData = ctx.createImageData(width, height);
+                var data = imageData.data;
+
+                // palette = reversePalette(palette)
+
+                // for (var j = 0; j < width * height; j++) {
+                //     var r = palette[pixels[j] * 4]
+                //     var g = palette[pixels[j] * 4 + 1]
+                //     var b = palette[pixels[j] * 4 + 2]
+
+                //     x = j % width
+                //     y = height - 1 - Math.floor(j / width)
+
+                //     var p = y * width + x
+
+                //     data[p * 4 + 0] = r
+                //     data[p * 4 + 1] = g
+                //     data[p * 4 + 2] = b
+                //     data[p * 4 + 3] = 255
+                // }
+
+                // for (var x = 0; x < width; x++) {
+                //     for (var y = 0; y < height; y++) {
+                //         p = y * (width + width % 4) + x
+                //         var r = palette[pixels[p] * 4]
+                //         var g = palette[pixels[p] * 4 + 1]
+                //         var b = palette[pixels[p] * 4 + 2]
+
+                //         data[y * width + x + 0] = r
+                //         data[y * width + x + 1] = g
+                //         data[y * width + x + 2] = b
+                //         data[y * width + x + 3] = 255
+                //     }
+                // }
+
+                // console.log(data.length)
+                for (var y = height - 1; y >= 0; y--) {
+                    for (var x = 0; x < width; x++) {
+                        var p = (height - 1 - y) * (width + width % 4) + x
+                        var r = palette[pixels[p] * 4]
+                        var g = palette[pixels[p] * 4 + 1]
+                        var b = palette[pixels[p] * 4 + 2]
+
+                        data[(y * width + x) * 4 + 0] = r
+                        data[(y * width + x) * 4 + 1] = g
+                        data[(y * width + x) * 4 + 2] = b
+                        data[(y * width + x) * 4 + 3] = 255
+
+                        // console.log(p + " " + x + " " + y + " ---- " + r + " " + g + " " + b)
+                    }
+                }
+
+                // p = 40 * width + 10
+                // data[p * 4 + 0] = 255
+                // data[p * 4 + 1] = 0
+                // data[p * 4 + 2] = 0
+                // data[p * 4 + 3] = 255
+
+
+                ctx.putImageData(imageData, 0, 0);
+            }
+        }
+
+        if (!String.prototype.format) {
+            String.prototype.format = function() {
+                var args = arguments;
+                return this.replace(/{(\d+)}/g, function(match, number) { 
+                    return typeof args[number] != 'undefined'
+                    ? args[number]
+                    : match
+                    ;
+                });
+            };
+        }
+
+        window.onload = drawSprites;
+
+    </script>
+
 {% endblock %}

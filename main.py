@@ -13,12 +13,14 @@ from flask import g, Flask, render_template, request, redirect
 from flask_login.login_manager import LoginManager
 from flask_login.utils import login_user, current_user
 from db import DbAccess
+from rodata import get_char_body_path
 
 app = Flask(__name__)
 login_manager = LoginManager()
 app.config['SECRET_KEY'] = "secret_key"
 login_manager.init_app(app)
 
+log = logging.getLogger("main")
 
 def get_db():
     if 'db' not in g:
@@ -61,9 +63,23 @@ def login():
 
 @app.route("/chars", methods=['GET'])
 def chars():
+    RODATA = "d:/data/"
+
     db = get_db()
     chars = db.get_chars_by_account_id(current_user.account_id)
-    return render_template("chars.html", chars=chars, sprData=[0, 1])
+
+    body_sprites = []
+    for char in chars:
+        spr_file = get_char_body_path(char, RODATA)
+        if spr_file is not None:
+            with open(unicode(spr_file), "rb") as f:
+                d = f.read()
+                d = map(ord, d)
+                body_sprites.append(d)
+        else:
+            body_sprites.append([])
+
+    return render_template("chars.html", chars=chars, body_sprites=body_sprites)
 
 
 if __name__ == "__main__":

@@ -47,7 +47,9 @@ def read_spr(path):
 
     d = map(ord, d)
 
+    # print d[len(d) - 1024:]
     palette = reverse_palette(d[len(d) - 1024:])
+    # print palette
 
     b = 4
     nof_frames = d[b] | d[b + 1] << 8
@@ -58,8 +60,6 @@ def read_spr(path):
         width = d[b] | d[b + 1] << 8
         height = d[b + 2] | d[b + 3] << 8
         comp_len = d[b + 4] | d[b + 5] << 8
-
-        print width, height, comp_len
 
         i = 0
         extra = 4 - width % 4
@@ -84,8 +84,12 @@ def read_spr(path):
 
         images.append((width, height, pixels))
 
+        # print "!!!", width, height, width * height, len(pixels)
+
         b += comp_len + 6
 
+    # print images[0][2]
+    print images[0][2]
     return images, palette
 
 
@@ -133,11 +137,6 @@ def img_to_bmp(width, height, pixels, palette):
     nof_important_colors = 0
     append_buf(nof_important_colors, 4)
 
-    print hex(palette[0])
-    print hex(palette[1])
-    print hex(palette[2])
-    print hex(palette[3])
-
     b.extend(palette)
     b.extend(pixels)
 
@@ -146,5 +145,5 @@ def img_to_bmp(width, height, pixels, palette):
 
 
 # read_act("d:/frus.act")
-images, palette = read_spr(os.path.join(os.path.dirname(os.path.abspath(__file__)), "frus.spr"))
+images, palette = read_spr(os.path.join(os.path.dirname(os.path.abspath(__file__)), "taekwon.spr"))
 img_to_bmp(images[0][0], images[0][1], images[0][2], palette)
