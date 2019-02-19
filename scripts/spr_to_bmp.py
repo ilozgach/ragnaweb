@@ -1,31 +1,78 @@
 import os
 
+def as_signed_4byte_int(val):
+    mul = 1
+    if val & (0x1 << 31):
+        mul = -1
+    if mul > 0:
+        return val & 0x7fffffff
+    else:
+        return (0x7fffffff - (val & 0x7fffffff) + 1) * mul
+
+
 def read_act(path):
     with open(path, "rb") as f:
         d = f.read()
 
     d = map(ord, d)
 
-    header = d[0] << 8 | d[1]
-    version = d[3]
-    nanimations = d[5] << 8 | d[4]
-    print "nanimations", nanimations
-    for ianimation in range(nanimations):
-        b = 13 + ianimation * 10
-        nframes = d[b] << 24 | d[b + 1] << 16 | d[b + 2] << 8 | d[b + 3]
-        print "nframes", nframes
-        for iframe in range(nframes):
-            bb = b + 32 + 4 + iframe * 10
-            nsubframes = d[bb] << 24 | d[bb + 1] << 16 | d[bb + 2] << 8 | d[bb + 3]
-            print "nsubframes", nsubframes
-            for isubframe in nsubframes:
-                # bbb = bb + 4 + 
-                offset_x = d[bbb] << 24 | d[bbb + 1] << 16 | d[bbb + 2] << 8 | d[bbb + 3]
-                offset_y = d[bbb + 4] << 24 | d[bbb + 5] << 16 | d[bbb + 6] << 8 | d[bbb + 7]
-                image = d[bbb + 8] << 24 | d[bbb + 9] << 16 | d[bbb + 10] << 8 | d[bbb + 11]
-                direction = d[bbb + 12] << 24 | d[bbb + 13] << 16 | d[bbb + 14] << 8 | d[bbb + 15]
-                color = d[bbb + 16] << 24 | d[bbb + 17] << 16 | d[bbb + 18] << 8 | d[bbb + 19]
-        break
+    header = d[0] | d[1] << 8
+    version_minor = d[2]
+    version_major = d[3]
+
+    nactions = d[4] | d[5] << 8
+    b = 16
+
+    for iaction in range(nactions):
+        nsprites = d[b] | d[b + 1] << 8 | d[b + 2] << 16 | d[b + 3] << 24
+        b += 4
+        for isprite in range(nsprites):
+            b += 32
+            nframes = d[b] | d[b + 1] << 8 | d[b + 2] << 16 | d[b + 3] << 24
+            b += 4
+            for iframe in range(nframes):
+                offset_x = as_signed_4byte_int(d[b] | d[b + 1] << 8 | d[b + 2] << 16 | d[b + 3] << 24)
+                b += 4
+                offset_y = as_signed_4byte_int(d[b] | d[b + 1] << 8 | d[b + 2] << 16 | d[b + 3] << 24)
+                b += 4
+                image = d[b] | d[b + 1] << 8 | d[b + 2] << 16 | d[b + 3] << 24
+                b += 4
+                direction = d[b] | d[b + 1] << 8 | d[b + 2] << 16 | d[b + 3] << 24
+                b += 4
+                if version_major >= 2:
+                    color = d[b] | d[b + 1] << 8 | d[b + 2] << 16 | d[b + 3] << 24
+                    b += 4
+                    scale_x = d[b] | d[b + 1] << 8 | d[b + 2] << 16 | d[b + 3] << 24
+                    b += 4
+                    if version_major > 2 or (version_major == 2 and version_minor >= 4):
+                        scale_y = d[b] | d[b + 1] << 8 | d[b + 2] << 16 | d[b + 3] << 24
+                        b += 4
+                    else:
+                        scale_y = scale_x
+                    rotation = d[b] | d[b + 1] << 8 | d[b + 2] << 16 | d[b + 3] << 24
+                    b += 4
+                    sprite_type = d[b] | d[b + 1] << 8 | d[b + 2] << 16 | d[b + 3] << 24
+                    b += 4
+                    if version_major > 2 or (version_major == 2 and version_minor >= 5):
+                        size_x = d[b] | d[b + 1] << 8 | d[b + 2] << 16 | d[b + 3] << 24
+                        b += 4
+                        size_y = d[b] | d[b + 1] << 8 | d[b + 2] << 16 | d[b + 3] << 24
+                        b += 4
+            if version_major >= 2:
+                event_index = d[b] | d[b + 1] << 8 | d[b + 2] << 16 | d[b + 3] << 24
+                b += 4
+                if version_major > 2 or (version_major == 2 and version_minor >= 3):
+                    npivots = d[b] | d[b + 1] << 8 | d[b + 2] << 16 | d[b + 3] << 24
+                    b += 4
+                    for ipivot in range(npivots):
+                        pivot_unknown = d[b] | d[b + 1] << 8 | d[b + 2] << 16 | d[b + 3] << 24
+                        b += 4
+                        pivot_center_x = d[b] | d[b + 1] << 8 | d[b + 2] << 16 | d[b + 3] << 24
+                        b += 4
+                        pivot_center_y = d[b] | d[b + 1] << 8 | d[b + 2] << 16 | d[b + 3] << 24
+                        b += 4
+                        pivot_attribute = d[b] | d[b + 1] << 8 | d[b + 2] << 16 | d[b + 3] << 24
+                        b += 4
 
 
 def reverse_palette(palette):
@@ -144,6 +191,6 @@ def img_to_bmp(width, height, pixels, palette):
         f.write(b)
 
 
-# read_act("d:/frus.act")
-images, palette = read_spr(os.path.join(os.path.dirname(os.path.abspath(__file__)), "taekwon.spr"))
-img_to_bmp(images[0][0], images[0][1], images[0][2], palette)
+read_act("taekwon.act")
+# images, palette = read_spr(os.path.join(os.path.dirname(os.path.abspath(__file__)), "taekwon.spr"))
+# img_to_bmp(images[0][0], images[0][1], images[0][2], palette)
