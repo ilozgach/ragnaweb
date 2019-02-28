@@ -150,6 +150,20 @@ def read_spr(path):
     return images, palette
 
 
+def mix_body_and_head(body_width, body_height, body_pixels, body_palette, body_offset_x, body_offset_y, head_width, head_height, head_pixels, head_palette, head_offset_x, head_offset_y):
+
+    def get_x_y(i):
+        return p
+
+    char_pixels = []
+    char_palette = body_palette + head_palette
+
+    char_width = body_width
+    real_width = body_width + (4 - body_width % 4)
+    char_height = body_height // 2 + (body_offset_y - head_offset_y) + head_height // 2
+
+
+
 def img_to_bmp(width, height, pixels, palette):
     b = bytearray()
 

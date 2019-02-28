@@ -83,6 +83,12 @@
             ctx.putImageData(imageData, offset_x, offset_y);
         }
 
+        function createCharDrawData(bodyWidth, bodyHeight, bodyPixels, bodyPalette, bodyOffsetX, bodyOffsetY,
+                                    headWidth, headHeight, headPixels, headPalette, headOffsetX, headOffsetY) {
+            var charWidth = bodyWidth;
+            var charHeight = bodyHeight / 2 + (bodyOffsetY - headOffsetY) + headHeight / 2;
+        }
+
         function drawChars() {
             var bodySprites = {{ body_sprites }}
             var bodyActors = {{ body_actors }}
