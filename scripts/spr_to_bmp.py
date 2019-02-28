@@ -21,14 +21,17 @@ def read_act(path):
     version_major = d[3]
 
     nactions = d[4] | d[5] << 8
+    print "nactions", nactions
     b = 16
 
     for iaction in range(nactions):
         nsprites = d[b] | d[b + 1] << 8 | d[b + 2] << 16 | d[b + 3] << 24
+        print "nsprites", nsprites
         b += 4
         for isprite in range(nsprites):
             b += 32
             nframes = d[b] | d[b + 1] << 8 | d[b + 2] << 16 | d[b + 3] << 24
+            print "nframes", nframes
             b += 4
             for iframe in range(nframes):
                 offset_x = as_signed_4byte_int(d[b] | d[b + 1] << 8 | d[b + 2] << 16 | d[b + 3] << 24)
@@ -135,8 +138,15 @@ def read_spr(path):
 
         b += comp_len + 6
 
-    # print images[0][2]
-    print images[0][2]
+    width = images[0][0]
+    height = images[0][1]
+    print width
+    print height
+    print width * height
+    print (width + width % 4) * height
+    print len(images[0][2])
+    for i in range(height):
+        print images[0][2][i * width:(i + 1) * width] 
     return images, palette
 
 
@@ -191,6 +201,7 @@ def img_to_bmp(width, height, pixels, palette):
         f.write(b)
 
 
-read_act("taekwon.act")
+# read_act("taekwon.act")
 # images, palette = read_spr(os.path.join(os.path.dirname(os.path.abspath(__file__)), "taekwon.spr"))
 # img_to_bmp(images[0][0], images[0][1], images[0][2], palette)
+images, palette = read_spr("head.spr")

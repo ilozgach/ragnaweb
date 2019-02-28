@@ -13,7 +13,7 @@ from flask import g, Flask, render_template, request, redirect
 from flask_login.login_manager import LoginManager
 from flask_login.utils import login_user, current_user
 from db import DbAccess
-from rodata import get_char_body_path
+from rodata import get_char_body_path, get_char_head_path
 
 app = Flask(__name__)
 login_manager = LoginManager()
@@ -63,12 +63,15 @@ def login():
 
 @app.route("/chars", methods=['GET'])
 def chars():
-    RODATA = "d:/data/"
+    RODATA = "d:/data"
 
     db = get_db()
     chars = db.get_chars_by_account_id(current_user.account_id)
 
     body_sprites = []
+    body_actors = []
+    head_sprites = []
+    head_actors = []
     for char in chars:
         spr_file = get_char_body_path(char, RODATA)
         if spr_file is not None:
@@ -76,10 +79,28 @@ def chars():
                 d = f.read()
                 d = map(ord, d)
                 body_sprites.append(d)
+            with open(unicode(spr_file.replace(".spr", ".act")), "rb") as f:
+                d = f.read()
+                d = map(ord, d)
+                body_actors.append(d)
         else:
             body_sprites.append([])
+            body_actors.append([])
 
-    return render_template("chars.html", chars=chars, body_sprites=body_sprites)
+        spr_file = get_char_head_path(char, RODATA)
+        if spr_file is not None:
+            with open(unicode(spr_file), "rb") as f:
+                d = f.read()
+                d = map(ord, d)
+                head_sprites.append(d)
+            with open(unicode(spr_file.replace(".spr", ".act")), "rb") as f:
+                d = f.read()
+                d = map(ord, d)
+                head_actors.append(d)
+
+    return render_template("chars.html", chars=chars,
+                           body_sprites=body_sprites, body_actors=body_actors,
+                           head_sprites=head_sprites, head_actors=head_actors)
 
 
 if __name__ == "__main__":
