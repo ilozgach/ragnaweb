@@ -60,6 +60,11 @@
             var ctx = canvas.getContext("2d");
             var imageData = ctx.createImageData(width, height);
             var data = imageData.data;
+            for (var d = 0; d < data.length; d++) {
+                if (data[d] != 0) {
+                    console.log(d)
+                }
+            }
 
             for (var y = height - 1; y >= 0; y--) {
                 for (var x = 0; x < width; x++) {
@@ -87,6 +92,10 @@
                                     headWidth, headHeight, headPixels, headPalette, headOffsetX, headOffsetY) {
             var charWidth = bodyWidth;
             var charHeight = bodyHeight / 2 + (bodyOffsetY - headOffsetY) + headHeight / 2;
+            var charPixels = []
+            var charPalette = []
+
+            
         }
 
         function drawChars() {
@@ -108,6 +117,7 @@
                 var bodyPalette = bodySpritesData[1]
 
                 var headSpritesData = parseSpr(headSprites[i]);
+                console.log(headActorData)
                 var headActorData = parseAct(headActors[i]);
                 var headFrames = headActorData[0][0][0];
                 var headImage = -1
