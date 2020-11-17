@@ -1,0 +1,164 @@
+{% block content %}
+    <script src="/static/js/spr.js" type="text/javascript"></script>
+
+    <table>
+        {% for char in chars %}
+            <tr>
+                <td colspan="3">{{ char.name }}</td>
+            </tr>
+            <tr>
+                <td rowspan="8"><canvas id="char_img_{{loop.index}}" width="200" height="300"></canvas></td>
+                <td>Level</td>
+                <td>{{ char.base_level }}</td>
+            </tr>
+            <tr>
+                <td>Zeny</td>
+                <td>{{ char.zeny }}</td>
+            </tr>
+            <tr>
+                <td>Str</td>
+                <td>{{ char.str }}</td>
+            </tr>
+            <tr>
+                <td>Agi</td>
+                <td>{{ char.agi }}</td>
+            </tr>
+            <tr>
+                <td>Dex</td>
+                <td>{{ char.dex }}</td>
+            </tr>
+            <tr>
+                <td>Int</td>
+                <td>{{ char.int }}</td>
+            </tr>
+            <tr>
+                <td>Vit</td>
+                <td>{{ char.vit }}</td>
+            </tr>
+            <tr>
+                <td>Luk</td>
+                <td>{{ char.luk }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <script type="text/javascript">
+
+        function reversePalette(palette) {
+            res = []
+            for (var i = 0; i < palette.length; i += 4) {
+                res.push(palette[i + 2])
+                res.push(palette[i + 1])
+                res.push(palette[i])
+                res.push(0)
+            }
+            return res
+        }
+
+        function drawSpriteWithOffset(canvas, width, height, pixels, palette, offset_x, offset_y) {
+            var ctx = canvas.getContext("2d");
+            var imageData = ctx.createImageData(width, height);
+            var data = imageData.data;
+            for (var d = 0; d < data.length; d++) {
+                if (data[d] != 0) {
+                    console.log(d)
+                }
+            }
+
+            for (var y = height - 1; y >= 0; y--) {
+                for (var x = 0; x < width; x++) {
+                    var p = (height - 1 - y) * (width + (4 - width % 4)) + x
+                    if (pixels[p] == 0) {
+                        continue;
+                    }
+
+                    var r = palette[pixels[p] * 4]
+                    var g = palette[pixels[p] * 4 + 1]
+                    var b = palette[pixels[p] * 4 + 2]
+                    var a = 255
+
+                    data[(y * width + x) * 4 + 0] = r
+                    data[(y * width + x) * 4 + 1] = g
+                    data[(y * width + x) * 4 + 2] = b
+                    data[(y * width + x) * 4 + 3] = a
+                }
+            }
+
+            ctx.putImageData(imageData, offset_x, offset_y);
+        }
+
+        function createCharDrawData(bodyWidth, bodyHeight, bodyPixels, bodyPalette, bodyOffsetX, bodyOffsetY,
+                                    headWidth, headHeight, headPixels, headPalette, headOffsetX, headOffsetY) {
+            var charWidth = bodyWidth;
+            var charHeight = bodyHeight / 2 + (bodyOffsetY - headOffsetY) + headHeight / 2;
+            var charPixels = []
+            var charPalette = []
+
+            
+        }
+
+        function drawChars() {
+            var bodySprites = {{ body_sprites }}
+            var bodyActors = {{ body_actors }}
+            var headSprites = {{ head_sprites }}
+            var headActors = {{ head_actors }}
+
+            for (var i = 0; i < bodySprites.length; i++) {
+                var canvas = document.getElementById("char_img_" + (i + 1));
+                var bodySpritesData = parseSpr(bodySprites[i]);
+                var bodyActorData = parseAct(bodyActors[i]);
+                var bodyFrames = bodyActorData[0][0][0];
+
+                var images = bodySpritesData[0]
+                var bodyWidth = images[0][0]
+                var bodyHeight = images[0][1]
+                var bodyPixels = images[0][2]
+                var bodyPalette = bodySpritesData[1]
+
+                var headSpritesData = parseSpr(headSprites[i]);
+                console.log(headActorData)
+                var headActorData = parseAct(headActors[i]);
+                var headFrames = headActorData[0][0][0];
+                var headImage = -1
+                var headFrameIndex = 0
+                for (headFrameIndex = 0; headFrameIndex < headFrames.length; headFrameIndex++) {
+                    if (headFrames[headFrameIndex][2] >= 0) {
+                        headImage = headFrames[headFrameIndex][2];
+                        break;
+                    }
+                }
+
+                var images = headSpritesData[0]
+                var headWidth = images[headImage][0]
+                var headHeight = images[headImage][1]
+                var headPixels = images[headImage][2]
+                var headPalette = headSpritesData[1]
+
+                bodyOffsetX = (canvas.width - bodyWidth) / 2 + bodyFrames[0][0]
+                headOffsetX = (canvas.width - headWidth) / 2 + headFrames[headFrameIndex][0]
+                bodyOffsetY = (canvas.height - bodyHeight) / 2
+                headOffsetY = (canvas.height - headHeight) / 2 + (headFrames[headFrameIndex][1] - bodyFrames[0][1])
+
+                drawSpriteWithOffset(canvas, bodyWidth, bodyHeight, bodyPixels, bodyPalette, bodyOffsetX, bodyOffsetY);
+                drawSpriteWithOffset(canvas, headWidth, headHeight, headPixels, headPalette, headOffsetX, headOffsetY);
+                
+            }
+        }
+
+        if (!String.prototype.format) {
+            String.prototype.format = function() {
+                var args = arguments;
+                return this.replace(/{(\d+)}/g, function(match, number) { 
+                    return typeof args[number] != 'undefined'
+                    ? args[number]
+                    : match
+                    ;
+                });
+            };
+        }
+
+        window.onload = drawChars;
+
+    </script>
+
+{% endblock %}

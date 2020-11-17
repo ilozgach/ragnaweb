@@ -1,17 +1,10 @@
 <!doctype html>
 <html>
     <head>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/chars.css') }}">
     </head>
     <body>
-        <div style="width:600px; background-color:grey; margin:0 auto;">
-            <div class="topnav">
-                <a href="/char">char</a>
-                <a href="/vending">vending</a>
-            </div>
-            <div>
-                {% block content %}
-                {% endblock %}
-            </div>
-        </div>
+        {% block content %}
+        {% endblock %}
     </body>
 </html>
