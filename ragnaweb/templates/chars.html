@@ -4,18 +4,20 @@
 
     <div class="global-container">
         <table class="chars-table">
-            <tr>
+            {% for char in chars %}
+                {% if loop.index % 5 == 0 %}
+                    <tr>
+                {% endif %}
                 <td>
                     <div class="char-container">
                         <canvas></canvas>
                         <div class="char-name">ZOHAN</div>
                     </div>
                 </td>
-                <td><div class="char-container"/></td>
-                <td><div class="char-container"/></td>
-                <td><div class="char-container"/></td>
-                <td><div class="char-container"/></td>
-            </tr>
+                {% if loop.index % 5 == 0 %}
+                    </tr>
+                {% endif %}
+            {% endfor %}
         </table>      
     </div>
 

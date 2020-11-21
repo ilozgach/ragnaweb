@@ -67,7 +67,8 @@ def chars():
     RODATA = "d:/data"
 
     db = get_db()
-    chars = db.get_chars_by_account_id(current_user.account_id)
+    # chars = db.get_chars_by_account_id(current_user.account_id)
+    chars = [0] * 15
 
     body_sprites = []
     body_actors = []
