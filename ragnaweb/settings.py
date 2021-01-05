@@ -1,4 +1,5 @@
-DB_HOST = "********"
+DB_HOST = "ilozgach.ru"
 DB_USER = "ragnarok"
 DB_PASSWORD = "********"
 DB_NAME = "ragnarok"
+CHAR_IMAGE_CACHE_PATH = "static/char_image_cache"

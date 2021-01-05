@@ -1,0 +1,3 @@
+[submodule "ragnaweb/src/pygrf"]
+	path = ragnaweb/src/pygrf
+	url = git@github.com:bmeinka/pygrf.git

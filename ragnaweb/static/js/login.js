@@ -1,5 +1,8 @@
-$('.message a').click(function(e){
-    e.preventDefault();
-    $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
-    return false;
-});
+// $(document).load(function() {
+//     console.log("!!!")
+//     var elem = $("#login_link").addClass("active")
+// });
+
+// $(document).ready(function() {
+//     var elem = $("#login_link").addClass("active")
+// });
