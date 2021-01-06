@@ -19,7 +19,8 @@ class CharImageCache(object):
 
     def __contains__(self, item):
         if item.char_id in self.cache:
-            if timeit.default_timer() > self.cache[item.char_id].timestamp + self.entry_timeout:
+            if timeit.default_timer() > self.cache[item.char_id].timestamp + self.entry_timeout or \
+                    item.online is True:
                 del(self.cache[item.char_id])
                 return False
             return True

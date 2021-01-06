@@ -25,6 +25,7 @@ class TestCharImageCache:
         char = entity.Char()
 
         assert char not in cache
+        str
 
     def test_setitem_key_type_error(self):
         cache = char_image_cache.CharImageCache(self.BASE_PATH)
@@ -77,3 +78,15 @@ class TestCharImageCache:
         assert char in cache
         time.sleep(0.55)
         assert char not in cache
+
+    def test_online(self):
+        cache = char_image_cache.CharImageCache(self.BASE_PATH)
+        char = entity.Char()
+        char.online = False
+
+        cache[char] = "blah"
+        assert char in cache
+
+        char.online = True
+        assert char not in cache
+
