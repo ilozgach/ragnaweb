@@ -1,27 +1,36 @@
-{% extends "layout.html" %}
+{% extends "base.html" %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/chars.css') }}">
+{% endblock %}
 
 {% block content %}
-
-    <div class="global-container">
+    <div class="main-container">
         <table class="chars-table">
-            {% for char in chars %}
-                {% if loop.index % 5 == 0 %}
+            {% for i in range(15) %}
+                {% if i == 0 or i == 5 or i == 10 %}
                     <tr>
                 {% endif %}
-                <td>
-                    <div class="char-container">
-                        <canvas></canvas>
-                        <div class="char-name">ZOHAN</div>
-                    </div>
-                </td>
-                {% if loop.index % 5 == 0 %}
+                    <td>
+                        <div class="char-container">
+                            {% if i < chars|length %}
+                                <img src="{{ 'static/char_images/%s.bmp' % chars[i].char_id }}">
+                                <div class="char-name">
+                                    {{ chars[i].name }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </td>
+                {% if i == 4 or i == 9 or i == 14 %}
                     </tr>
                 {% endif %}
             {% endfor %}
-        </table>      
+        </table>
+        <div class="char-info-wrapper">
+            <div class="char-info-container">
+                
+            </div>
+        </div>
     </div>
-
 {% endblock %}
-
-
-

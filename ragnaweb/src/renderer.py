@@ -81,11 +81,12 @@ class Renderer(object):
                     body_pixel_index = body_y * body_image.width + body_x
                     # body_pixel_color = body_image.pixels[body_pixel_index]
                     # char_pixel_color = char_pixel_color.alpha_blend(body_pixel_color)
-                    char_pixels.append(body_image.pixels[body_pixel_index])
-                    continue
+                    if body_image.data[body_pixel_index] != 0:  # Hack zero palette
+                        char_pixels.append(body_image.pixels[body_pixel_index])
+                        continue
 
                 # char_pixels.append(char_pixel_color)
-                char_pixels.append(pygrf.graphics.Color(0, 0, 0, 0))
+                char_pixels.append(pygrf.graphics.Color(255, 255, 255, 0))
 
         char_image = pygrf.graphics.Image(char_image_width, char_image_height, char_pixels, None, None)
-        char_image.to_pil_image().save(out_file_path)
+        char_image.to_pil_image().save(out_file_path, )

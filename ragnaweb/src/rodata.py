@@ -8,7 +8,8 @@ CLASS_TO_FILE_NAME = {
     6: (u"µµµÏ", "Thief"),
     4011: (u"È­ÀÌÆ®½º¹Ì½º", "Blacksmith"),
     4046: (u"ÅÂ±Ç¼Ò³â", "Taekwon"),
-    4062: (u"·¹ÀÎÁ®", "Ranger")
+    4062: (u"·¹ÀÎÁ®", "Ranger"),
+    4064: (u"¹ÌÄÉ´Ð", "Mechanic")
 }
 
 def get_char_body_spr_path(char, rodata_path):
