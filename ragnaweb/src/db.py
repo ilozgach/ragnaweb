@@ -8,7 +8,7 @@ log = logger.create()
 
 class DbAccess(object):
     def __init__(self, host, user, passwd, db="ragnarok"):
-        self.conn = pymysql.connect(host, user, passwd, db)
+        self.conn = pymysql.connect(host=host, user=user, password=passwd, database=db)
 
     def get_login_by_account_id(self, account_id):
         query = "SELECT * FROM login WHERE account_id={}".format(account_id)

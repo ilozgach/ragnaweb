@@ -3,6 +3,7 @@
 {% block head %}
     {{ super() }}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/chars.css') }}">
+    <meta id="data" data-chars='{{ chars|tojson|safe }}'>
 {% endblock %}
 
 {% block content %}
@@ -13,7 +14,7 @@
                     <tr>
                 {% endif %}
                     <td>
-                        <div class="char-container">
+                        <div id="char-container-{{ i }}" class="char-container">
                             {% if i < chars|length %}
                                 <img src="{{ 'static/char_images/%s.bmp' % chars[i].char_id }}">
                                 <div class="char-name">
@@ -27,10 +28,26 @@
                 {% endif %}
             {% endfor %}
         </table>
-        <div class="char-info-wrapper">
+        <!-- Char details feature is not implemented yet -->
+        <!-- <div class="char-info-wrapper">
             <div class="char-info-container">
-                
+                <table class="char-info-table">
+                    <tr>
+                        <td>MAP</td>
+                        <td id="td-map">OLOLO</td>
+                    </tr>
+                    <tr>
+                        <td>JOB</td>
+                        <td id="td-job">OLOLO</td>
+                    </tr>
+                    <tr>
+                        <td>LVL</td>
+                        <td id="td-lvl">OLOLO</td>
+                    </tr>
+                </table>
             </div>
-        </div>
+        </div> -->
     </div>
+    <script src="{{ url_for('static', filename='js/jquery-3.5.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/chars.js') }}"></script>
 {% endblock %}

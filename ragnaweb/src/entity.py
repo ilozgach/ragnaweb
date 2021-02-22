@@ -111,3 +111,19 @@ class Char(object):
 
     def __hash__(self):
         pass
+
+    def to_dict(self):
+        return {
+            "char_id": self.char_id,
+            "name": self.name
+        }
+
+
+class Mob(object):
+    def __init__(self, **kwargs):
+        self.mob_id = None
+        self.sprite = None
+        self.name = None
+
+        for k, v in kwargs.items():
+            setattr(self, k, v)

@@ -107,7 +107,7 @@ def chars():
             rend.render_char(body_sprite_path, head_sprite_path, char_image_out_file_path)
 
             char_image_cache[char] = char_image_out_file_path
-    return render_template("chars.html", chars=chars)
+    return render_template("chars.html", chars=[char.to_dict() for char in chars])
 
 
 if __name__ == "__main__":

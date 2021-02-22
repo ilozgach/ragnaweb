@@ -13,7 +13,7 @@
 	width: 100px;
 	height: 130px;
 	border-radius: 5px;	
-	border-color: black;
+	/*border-color: black;*/
 	border-width: 1px;
 	border-style: solid;
 	position: relative; /* Needed to make char-name aligned from the bottom */
@@ -29,6 +29,10 @@
     margin-left: auto;
     margin-right: auto;
 	margin-top: 5px;
+}
+
+.char-container-active {
+    /* border-color: green; */
 }
 
 .char-name {
@@ -56,4 +60,13 @@
 	border-style: solid;
 	cursor: pointer;
 	margin-top: 5px;
+}
+
+.char-info-table {
+	margin-top: 30px;
+}
+
+td {
+    font-size: 13px;
+    font-family: Tahoma;
 }

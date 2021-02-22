@@ -4,3 +4,5 @@ mysqlclient
 pillow
 pytest
 numpy
+pyyaml
+pymysql
